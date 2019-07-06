@@ -24,7 +24,7 @@ run:
 	# runs the semver application in development
 	@go run ./cmd/semver ${ARGS}
 
-image: semver
+image: build
 	# builds the docker image
 	@docker build \
 		--build-arg BIN_NAME=semver \
