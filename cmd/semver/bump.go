@@ -23,6 +23,8 @@ var bump cli.Command = cli.Command{
 		fmt.Println("--major")
 		fmt.Println("--minor")
 		fmt.Println("--patch")
+		fmt.Println("--label")
+		fmt.Println("--git")
 	},
 	Flags: bumpFlags,
 	Action: func(c *cli.Context) error {
@@ -73,7 +75,7 @@ var bump cli.Command = cli.Command{
 		default:
 			semverInput.BumpPatch()
 		}
-		fmt.Printf(semverInput.ToString())
+		fmt.Print(semverInput.ToString())
 		if c.Bool("verbose") {
 			fmt.Printf("\n")
 		}
