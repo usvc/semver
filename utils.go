@@ -40,7 +40,7 @@ func isGitRepository(pathToCheck string) bool {
 	}
 }
 
-func IsSemver(semver string) bool {
+func IsValid(semver string) bool {
 	matched, err := regexp.Match(semverRegex, []byte(semver))
 	if err != nil {
 		panic(err)

@@ -15,13 +15,15 @@ const InvalidString = ""
 // string is not semver-formatted
 func NewSemver(semver string) Semver {
 	output := Semver{}
-	if !IsSemver(semver) {
+	if !IsValid(semver) {
 		panic(fmt.Errorf("'%s' does not follow semver", semver))
 	}
 	output.FromString(semver)
 	return output
 }
 
+// Semver stores a semver version in a structured format
+// and provides methods for its manipulation
 type Semver struct {
 	Prefix         string
 	Major          int
@@ -31,6 +33,7 @@ type Semver struct {
 	LabelIteration int
 }
 
+// BumpMajor bumps the major version.
 func (semver *Semver) BumpMajor() {
 	semver.Major += 1
 	semver.Minor = 0
@@ -39,6 +42,7 @@ func (semver *Semver) BumpMajor() {
 	semver.LabelIteration = InvalidNumber
 }
 
+// BumpMinor bumps the minor version.
 func (semver *Semver) BumpMinor() {
 	semver.Minor += 1
 	semver.Patch = 0
@@ -46,19 +50,28 @@ func (semver *Semver) BumpMinor() {
 	semver.LabelIteration = InvalidNumber
 }
 
+// BumpPatch bumps the patch version.
 func (semver *Semver) BumpPatch() {
 	semver.Patch += 1
 	semver.Label = InvalidString
 	semver.LabelIteration = InvalidNumber
 }
 
+// BumpLabel bumps the iteration number of the label
+// iff there exists a label. If not label iteration
+// number exists, it will be set to 0.
 func (semver *Semver) BumpLabel() {
 	if semver.Label != InvalidString {
 		semver.LabelIteration += 1
 	}
 }
 
+// FromString takes in an input string and assigns it
+// to the appropriate fields in this instance of Semver
 func (semver *Semver) FromString(input string) {
+	if !IsValid(input) {
+		panic(fmt.Errorf("'%s' does not follow semver", input))
+	}
 	matches := regexp.
 		MustCompile(semverRegex).
 		FindStringSubmatch(input)
@@ -83,14 +96,17 @@ func (semver *Semver) FromString(input string) {
 	}
 }
 
+// HasLabel indicates if the label value exists logically
 func (semver Semver) HasLabel() bool {
 	return len(semver.Label) > 0
 }
 
+// HasLabelIteration indicates if there is a label iteration number
 func (semver Semver) HasLabelIteration() bool {
 	return semver.LabelIteration > InvalidNumber
 }
 
+// ToString returns a string representation of this Semver instance
 func (semver Semver) ToString() string {
 	output := fmt.Sprintf(
 		"%s%v.%v.%v",
