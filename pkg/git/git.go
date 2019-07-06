@@ -8,6 +8,32 @@ import (
 	plumbing "gopkg.in/src-d/go-git.v4/plumbing"
 )
 
+func AddTag(pathToRepository string, tag string) error {
+	absolutePath := resolveAbsolutePath(pathToRepository)
+	repository, err := git.PlainOpenWithOptions(
+		absolutePath,
+		&git.PlainOpenOptions{
+			DetectDotGit: true,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	headRef, headErr := repository.Head()
+	if headErr != nil {
+		return err
+	}
+	hash := headRef.Hash()
+	refName := plumbing.ReferenceName("refs/tags/" + tag)
+	ref := plumbing.NewHashReference(refName, hash)
+	err = repository.Storer.SetReference(ref)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetTags(pathToRepository string) ([]string, error) {
 	absolutePath := resolveAbsolutePath(pathToRepository)
 	repository, err := git.PlainOpenWithOptions(

@@ -12,6 +12,8 @@ go get -u gitlab.com/usvc/utils/semver
 
 ## Bump a provided version
 
+**Use Case** - As a developer, I'd like to do a bump of a semver version string and receive the next version as the output.
+
 ```sh
 # major version bump:
 semver bump 1.2.3-label.1 -M
@@ -32,18 +34,46 @@ semver bump 1.2.3-label.1 -l
 
 ## Bump a version using Git tags
 
+**Use Case** - As a developer, I'd like to receive an output of the bumped version, using the latest semver version in a Git repository's tags as input.
+
+```sh
+# bump the major version (assuming git tag 'v1.2.3' exists):
+semver bump --git -M
+# > v2.0.0
+
+# bump the minor version (assuming git tag 'v1.2.3' exists):
+semver bump --git -m
+# > v1.3.0
+
+# bump the patch version (assuming git tag 'v1.2.3' exists):
+semver bump --git -p
+# > v1.2.4
+
+# bump the label version (assuming git tag 'v1.2.3-label.0' exists):
+semver bump --git -l
+# > v1.2.3-label.1
+```
+
+## Bump Git tag version
+
+**Use Case** - As a developer, I'd like to run a single command that gets the latest semver version in a Git repository's tags, bumps it, and adds it to the repository's tags.
+
 ```sh
 # bump the major version:
-git tag "$(semver bump --git -M)"
+semver bump --git --apply -M
+# > added git tag 'vX.0.0'
 
 # bump the minor version:
-git tag "$(semver bump --git -m)"
+semver bump --git --apply -m
+# > added git tag 'vX.Y.0'
 
 # bump the patch version:
-git tag "$(semver bump --git -p)"
+semver bump --git --apply -p
+# > added git tag 'vX.Y.Z'
 
 # bump the label version:
-git tag "$(semver bump --git -l)"
+semver bump --git --apply -l
+# > added git tag 'vX.Y.Z-label.A'
 ```
 
 ## Usage notes

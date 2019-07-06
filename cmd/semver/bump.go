@@ -60,9 +60,6 @@ var bump cli.Command = cli.Command{
 			return err
 		}
 		semverInput := semver.New(input)
-		if c.Bool("verbose") {
-			fmt.Printf("%s -> ", semverInput.ToString())
-		}
 		switch {
 		case c.Bool("label"):
 			semverInput.BumpLabel()
@@ -75,7 +72,15 @@ var bump cli.Command = cli.Command{
 		default:
 			semverInput.BumpPatch()
 		}
-		fmt.Print(semverInput.ToString())
+		if c.Bool("git") && c.Bool("apply") {
+			git.AddTag(getCurrentWorkingDirectory(), semverInput.ToString())
+			fmt.Printf("added git tag '%s'", semverInput.ToString())
+		} else {
+			if c.Bool("verbose") {
+				fmt.Printf("%s -> ", semverInput.ToString())
+			}
+			fmt.Print(semverInput.ToString())
+		}
 		if c.Bool("verbose") {
 			fmt.Printf("\n")
 		}
@@ -108,5 +113,9 @@ var bumpFlags []cli.Flag = []cli.Flag{
 	cli.BoolFlag{
 		Name:  "git",
 		Usage: "use latest version retrieved from git tags",
+	},
+	cli.BoolFlag{
+		Name:  "apply",
+		Usage: "if specified with --git, adds the bumped version automatically to the tags",
 	},
 }
