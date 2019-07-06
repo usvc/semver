@@ -1,3 +1,7 @@
+# dev artifacts
 bin
 c.out
 vendor
+
+# make artifacts
+.publish_origin

@@ -32,6 +32,14 @@ image: build
 		--tag usvc/semver:latest \
 		.
 
+publish_github:
+	# publish repository to github
+	@git remote get-url origin > ./.publish_github
+	@git remote set-url origin git@github.com:usvc/semver.git
+	@git push origin master
+	@git remote set-url origin $$(cat ./.publish_github)
+	@rm -rf ./.publish_github
+
 publish_image: image
 	# publishes the docker image
 	@docker push usvc/semver:latest
