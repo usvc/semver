@@ -122,3 +122,19 @@ make semver_run ARGS="bump 1.2.3 -m"
 ```sh
 make semver
 ```
+
+## Configuring the CI
+
+### Gitlab
+
+Go to the settings page under CI/CD > Variables and input the following CI variables:
+
+| Key | Description |
+| ---: | :--- |
+| `DOCKER_REGISTRY_URL` | URL to the Docker registry to push to |
+| `DOCKER_REGISTRY_USERNAME` | Username of the Docker registry to push to |
+| `DOCKER_REGISTRY_PASSWORD` | Password of the Docker registry user |
+
+# License
+
+This project is licensed under the MIT license. [See the full text](./LICENSE).
