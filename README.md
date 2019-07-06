@@ -1,11 +1,11 @@
 # Semver
 
-`WORK-IN-PROGRESS`
+An easy-peasy CLI tool to bump semver versions.
 
 # Installation
 
 ```sh
-go get -u gitlab.com/usvc/utils/semver
+go get -v -u gitlab.com/usvc/utils/semver/cmd/semver;
 ```
 
 # Usage
@@ -75,6 +75,14 @@ semver bump --git --apply -p
 semver bump --git --apply -l
 # > added git tag 'vX.Y.Z-label.A'
 ```
+
+## Usage via Dockerfile
+
+```sh
+docker run -it -v $(pwd):/repo usvc/semver:latest ${SUBCOMMANDS_AND_FLAGS}
+```
+
+> Replace `${SUBCOMMANDS_AND_FLAGS}` with whatever you would run behind the main `semver` command.
 
 ## Usage notes
 

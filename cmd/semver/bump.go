@@ -13,9 +13,21 @@ import (
 var bump cli.Command = cli.Command{
 	Name:      "bump",
 	ShortName: "+",
-	Usage:     "bumps a provided semver",
-	ArgsUsage: "[ eg. \"v1.2.3\" ]",
+	Usage:     "bump a provided semver",
+	Description: `
+   bump a cli literal input:
+		 semver bump v1.2.3
 
+	 bump a cli piped input:
+     echo 'v1.2.3' | semver bump
+
+	 bump the latest git tag:
+		 semver bump --git
+
+	 bump the latest git tag and add it:
+	   semver bump --git --apply`,
+	ArgsUsage: "<semver version>",
+	HideHelp:  false,
 	BashComplete: func(c *cli.Context) {
 		if c.NArg() > 0 {
 			return
@@ -34,7 +46,7 @@ var bump cli.Command = cli.Command{
 			cwd := getCurrentWorkingDirectory()
 			retrievedTags, retrieveTagsErr := git.GetTags(cwd)
 			if retrieveTagsErr != nil {
-				err := fmt.Errorf("an error happened while retrieving git tags from '%s'", cwd)
+				err := fmt.Errorf("an error happened while retrieving git tags from '%s': %s", cwd, retrieveTagsErr)
 				fmt.Println(err)
 				os.Exit(1)
 			}
@@ -107,15 +119,15 @@ var bumpFlags []cli.Flag = []cli.Flag{
 		Usage: "bump the label iteration",
 	},
 	cli.BoolFlag{
-		Name:  "verbose, vv",
-		Usage: "show verbose logs (do not enable for automations)",
-	},
-	cli.BoolFlag{
 		Name:  "git",
 		Usage: "use latest version retrieved from git tags",
 	},
 	cli.BoolFlag{
 		Name:  "apply",
 		Usage: "if specified with --git, adds the bumped version automatically to the tags",
+	},
+	cli.BoolFlag{
+		Name:  "verbose, vv",
+		Usage: "show verbose logs (do not enable for automations)",
 	},
 }
