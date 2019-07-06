@@ -1,6 +1,9 @@
 stages:
   - validation
   - release
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
 
 run tests:
   stage: validation
