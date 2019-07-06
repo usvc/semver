@@ -46,6 +46,19 @@ semver bump --git
 
 > The `-M`, `-m`, `-p` and `-l` flags can be used in conjunction with `--git`.
 
+## End-to-end with Git tags
+
+```sh
+# bump the major version:
+git tag "$(semver bump --git -M)"
+# bump the minor version:
+git tag "$(semver bump --git -m)"
+# bump the patch version:
+git tag "$(semver bump --git -p)"
+# bump the label version:
+git tag "$(semver bump --git -l)"
+```
+
 # Development
 
 ## Install dependencies
