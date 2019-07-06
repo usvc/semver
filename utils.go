@@ -4,8 +4,6 @@ import (
 	"os"
 	"path"
 	"regexp"
-
-	git "gopkg.in/src-d/go-git.v4"
 )
 
 const semverRegex = `^(?P<Prefix>[vV]?)` +
@@ -29,15 +27,6 @@ func resolveAbsolutePath(providedPath string) string {
 	workingDirectory := getCurrentWorkingDirectory()
 	resolvedPath := path.Join(workingDirectory, providedPath)
 	return resolvedPath
-}
-
-func isGitRepository(pathToCheck string) bool {
-	absolutePath := resolveAbsolutePath(pathToCheck)
-	if _, err := git.PlainOpen(absolutePath); err != nil {
-		return false
-	} else {
-		return true
-	}
 }
 
 func IsValid(semver string) bool {

@@ -2,6 +2,12 @@
 
 `WORK-IN-PROGRESS`
 
+# Installation
+
+```sh
+go get -u gitlab.com/usvc/utils/semver
+```
+
 # Usage
 
 ## Bump a patch version
@@ -31,6 +37,14 @@ semver bump 1.2.3-label.1 -M
 semver bump 1.2.3-label.1 -l
 # > 1.2.3-label.2
 ```
+
+## Bump a Git tag version
+
+```sh
+semver bump --git
+```
+
+> The `-M`, `-m`, `-p` and `-l` flags can be used in conjunction with `--git`.
 
 # Development
 

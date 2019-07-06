@@ -27,3 +27,11 @@ func getCLIInput(c *cli.Context) string {
 	}
 	return strings.Trim(output, "\n\r_- ")
 }
+
+func getCurrentWorkingDirectory() string {
+	if workingDirectory, err := os.Getwd(); err != nil {
+		panic(err)
+	} else {
+		return workingDirectory
+	}
+}

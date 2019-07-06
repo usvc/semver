@@ -3,6 +3,9 @@ include ./scripts/system/Makefile
 dep:
 	@GO111MODULE=on go mod vendor -v
 
+test:
+	@go test ./... -cover -coverprofile c.out
+
 semver:
 	@CGO_ENABLED=0 \
 		GO111MODULE=on \

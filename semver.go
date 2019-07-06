@@ -10,10 +10,10 @@ import (
 const InvalidNumber = -1
 const InvalidString = ""
 
-// NewSemver is a convenience method that returns a Semver
+// New is a convenience method that returns a Semver
 // structure given a semver string, panicks if the provided
 // string is not semver-formatted
-func NewSemver(semver string) Semver {
+func New(semver string) Semver {
 	output := Semver{}
 	if !IsValid(semver) {
 		panic(fmt.Errorf("'%s' does not follow semver", semver))
@@ -104,6 +104,30 @@ func (semver Semver) HasLabel() bool {
 // HasLabelIteration indicates if there is a label iteration number
 func (semver Semver) HasLabelIteration() bool {
 	return semver.LabelIteration > InvalidNumber
+}
+
+func (semver Semver) IsGreaterThan(challenger Semver) bool {
+	switch {
+	case semver.Major > challenger.Major:
+		return true
+	case semver.Major < challenger.Major:
+		return false
+	case semver.Minor > challenger.Minor:
+		return true
+	case semver.Minor < challenger.Minor:
+		return false
+	case semver.Patch > challenger.Patch:
+		return true
+	case semver.Patch < challenger.Patch:
+		return false
+	case semver.Label == challenger.Label:
+		if semver.LabelIteration > challenger.LabelIteration {
+			return true
+		} else {
+			return false
+		}
+	}
+	return false
 }
 
 // ToString returns a string representation of this Semver instance
