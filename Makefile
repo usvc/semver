@@ -33,18 +33,20 @@ run_semver:
 	# runs the semver application in development
 	@go run ./cmd/semver ${ARGS}
 
-image:
-	# builds the docker image
+images:
+	# builds the docker image for `semver`
 	@docker build \
 		--file ./build/Dockerfile \
 		--tag usvc/semver:latest \
 		--target semver \
 		.
+	# builds the docker image for `semver-bump`
 	@docker build \
 		--file ./build/Dockerfile \
 		--tag usvc/semver-bump:latest \
 		--target bump \
 		.
+	# builds the docker image for `semver-get`
 	@docker build \
 		--file ./build/Dockerfile \
 		--tag usvc/semver-get:latest \
@@ -59,7 +61,7 @@ publish_github:
 	@git remote set-url origin $$(cat ./.publish_github)
 	@rm -rf ./.publish_github
 
-publish_image: image
+publish_images: images
 	# publishes the docker image
 	@docker push usvc/semver:latest
 	@docker tag usvc/semver:latest usvc/semver:$$(docker run -it -v $$(pwd):/repo usvc/semver-get:latest)

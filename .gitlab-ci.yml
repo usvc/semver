@@ -3,6 +3,7 @@ services:
   - docker:dind
 stages:
   - validation
+  - versioning
   - release
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -34,9 +35,14 @@ build images:
   script:
     - make images
 
+bump:
+  stage: versioning
+  script:
+    - 'printf -- "placeholder - we should bump the version here and push the tag back to gitlab"'
+
 docker image:
   stage: release
   script:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
-    - make publish_image
+    - make publish_images
     - docker logout
