@@ -3,9 +3,6 @@ services:
 stages:
   - validation
   - release
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
 
 run tests:
   stage: validation
@@ -37,7 +34,7 @@ build binary:
 
 docker image:
   stage: release
-  image: usvc/ci-docker:latest
+  image: usvc/ci-docker:gitlab-latest
   script:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
     - make publish_image
