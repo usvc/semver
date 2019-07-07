@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"gitlab.com/usvc/utils/semver/internal/utils"
 )
 
 type GitTests struct {
@@ -16,14 +17,14 @@ func TestGit(t *testing.T) {
 }
 
 func (s *GitTests) TestGetTags() {
-	cwd := getCurrentWorkingDirectory()
+	cwd := utils.GetCurrentWorkingDirectory()
 	tags, err := GetTags(cwd)
 	s.Nil(err)
 	s.True(len(tags) > 0)
 }
 
 func (s *GitTests) TestIsRepository() {
-	cwd := getCurrentWorkingDirectory()
+	cwd := utils.GetCurrentWorkingDirectory()
 	is, err := IsGitRepository(cwd)
 	s.Nil(err)
 	s.True(is)

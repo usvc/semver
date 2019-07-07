@@ -1,15 +1,14 @@
 package git
 
 import (
-	"os"
-	"path"
-
 	git "gopkg.in/src-d/go-git.v4"
 	plumbing "gopkg.in/src-d/go-git.v4/plumbing"
+
+	"gitlab.com/usvc/utils/semver/internal/utils"
 )
 
 func AddTag(pathToRepository string, tag string) error {
-	absolutePath := resolveAbsolutePath(pathToRepository)
+	absolutePath := utils.ResolveAbsolutePath(pathToRepository)
 	repository, err := git.PlainOpenWithOptions(
 		absolutePath,
 		&git.PlainOpenOptions{
@@ -35,7 +34,7 @@ func AddTag(pathToRepository string, tag string) error {
 }
 
 func GetTags(pathToRepository string) ([]string, error) {
-	absolutePath := resolveAbsolutePath(pathToRepository)
+	absolutePath := utils.ResolveAbsolutePath(pathToRepository)
 	repository, err := git.PlainOpenWithOptions(
 		absolutePath,
 		&git.PlainOpenOptions{
@@ -58,7 +57,7 @@ func GetTags(pathToRepository string) ([]string, error) {
 }
 
 func IsGitRepository(pathToCheck string) (bool, error) {
-	absolutePath := resolveAbsolutePath(pathToCheck)
+	absolutePath := utils.ResolveAbsolutePath(pathToCheck)
 	if _, err := git.PlainOpenWithOptions(
 		absolutePath,
 		&git.PlainOpenOptions{
@@ -69,21 +68,4 @@ func IsGitRepository(pathToCheck string) (bool, error) {
 	} else {
 		return true, nil
 	}
-}
-
-func getCurrentWorkingDirectory() string {
-	if workingDirectory, err := os.Getwd(); err != nil {
-		panic(err)
-	} else {
-		return workingDirectory
-	}
-}
-
-func resolveAbsolutePath(providedPath string) string {
-	if path.IsAbs(providedPath) {
-		return providedPath
-	}
-	workingDirectory := getCurrentWorkingDirectory()
-	resolvedPath := path.Join(workingDirectory, providedPath)
-	return resolvedPath
 }

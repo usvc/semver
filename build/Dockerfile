@@ -1,28 +1,49 @@
-FROM alpine:3.9.4 AS dev
-ARG BIN_NAME="app"
-WORKDIR /
-RUN apk update --no-cache \
-  && apk upgrade --no-cache \
-  && apk add ca-certificates --no-cache \
-  && update-ca-certificates \
-  && adduser -D -u 500 -H app
-COPY ./bin/${BIN_NAME} /app
-RUN chown app:app /app
-USER app
-ENTRYPOINT [ "/app" ]
-
-FROM scratch AS production
-COPY --from=dev /etc/ssl/certs/ /etc/ssl/certs/
-COPY --from=dev /etc/passwd /etc/passwd
-COPY --from=dev /app /app
-USER app
-ENTRYPOINT [ "/app" ]
-WORKDIR /repo
-ARG BIN_NAME="app"
-ARG DESCRIPTION="see https://gitlab.com/usvc/utils/semver for more information"
+FROM alpine:3.9 AS base
+RUN apk update --no-cache
+RUN apk upgrade --no-cache
+RUN apk add --no-cache git make curl jq ca-certificates
+RUN update-ca-certificates
+RUN adduser -D -u 500 -H app
 LABEL maintainer="@zephinzer" \
-  description="${DESCRIPTION}" \
   maintainer_url="https://gitlab.com/usvc" \
-  repository_url="https://gitlab.com/usvc/utils/semver" \
-  container_url="https://hub.docker.com/r/usvc/${BIN_NAME}" \
-  application_url="https://gitlab.com/usvc/utils/semver/tree/master/cmd/${BIN_NAME}"
+  description="see https://gitlab.com/usvc/utils/semver for more information" \
+  repository_url="https://gitlab.com/usvc/utils/semver"
+
+FROM golang:alpine AS build
+RUN apk update --no-cache
+RUN apk upgrade --no-cache
+RUN apk add --no-cache make git
+WORKDIR /app
+COPY . .
+RUN make dep
+RUN make binaries
+
+FROM base AS semver
+USER app
+COPY --from=build /app/bin/semver /semver
+ENTRYPOINT [ "/semver" ]
+WORKDIR /repo
+LABEL \
+  usage="docker run -it -v $(pwd):/repo usvc/semver:latest -h" \
+  container_url="https://hub.docker.com/r/usvc/semver" \
+  application_url="https://gitlab.com/usvc/utils/semver/tree/master/cmd/semver"
+
+FROM base AS bump
+USER app
+COPY --from=build /app/bin/bump /bump
+ENTRYPOINT [ "/bump" ]
+WORKDIR /repo
+LABEL \
+  usage="docker run -it -v $(pwd):/repo usvc/semver-bump:latest -h" \
+  container_url="https://hub.docker.com/r/usvc/semver-bump" \
+  application_url="https://gitlab.com/usvc/utils/semver/tree/master/cmd/bump"
+
+FROM base AS get
+USER app
+COPY --from=build /app/bin/get /get
+ENTRYPOINT [ "/get" ]
+WORKDIR /repo
+LABEL \
+  usage="docker run -it -v $(pwd):/repo usvc/semver-get:latest -h" \
+  container_url="https://hub.docker.com/r/usvc/semver-get" \
+  application_url="https://gitlab.com/usvc/utils/semver/tree/master/cmd/get"

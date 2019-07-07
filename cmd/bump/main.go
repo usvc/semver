@@ -8,21 +8,19 @@ import (
 
 	"github.com/urfave/cli"
 	Bump "gitlab.com/usvc/utils/semver/internal/bump"
-	Get "gitlab.com/usvc/utils/semver/internal/get"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "semver"
+	app.Name = "semver-bump"
 	app.Version = fmt.Sprintf("%s [%s]", Version, Commit)
 	app.Author = "@zephinzer <dev-at-joeir-dot-net>"
-	app.Description = "easy-peasy manipulation of semver versions"
-	app.Usage = "easy-peasy manipulation of semver versions"
+	app.Description = "bump semver versions"
+	app.Usage = "bump semver semvers"
 	app.EnableBashCompletion = true
-	app.Commands = []cli.Command{
-		Bump.Command,
-		Get.Command,
-	}
+	app.BashComplete = Bump.BashComplete
+	app.Flags = Bump.Flags
+	app.Action = Bump.Action
 
 	err := app.Run(os.Args)
 	if err != nil {
