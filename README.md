@@ -1,5 +1,7 @@
 # Semver
 
+[![pipeline status](https://gitlab.com/usvc/utils/semver/badges/master/pipeline.svg)](https://gitlab.com/usvc/utils/semver/commits/master)
+
 An easy-peasy CLI tool to bump semver versions.
 
 # Installation
