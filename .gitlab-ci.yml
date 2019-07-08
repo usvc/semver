@@ -28,7 +28,7 @@ build binary:
       - ./bin/semver
   script:
     - make dep
-    - make binaries.all
+    - make binaries
 
 build images:
   stage: validation

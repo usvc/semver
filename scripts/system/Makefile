@@ -2,6 +2,7 @@ ifeq ($(OS),Windows_NT)
 	# this is windows
 	SYS_OS = windows
 	SYS_OS_TRUNC = win
+	BIN_EXT = .exe
 
 	# get SYS_ARCH
 	ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)

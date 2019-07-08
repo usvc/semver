@@ -1,34 +1,36 @@
 include ./scripts/system/Makefile
 
-binary: dep
-	# builds main binary
-	@$(MAKE) _binary GOARCH=$(SYS_ARCH) GOOS=$(SYS_OS) BIN_NAME=semver
-	cp ./bin/semver-$(SYS_OS)-$(SYS_ARCH) ./bin/semver
-binaries.all:
-	@$(MAKE) _binary.all.supported BIN_NAME=semver
-	@$(MAKE) _binary.all.supported BIN_NAME=bump
-	@$(MAKE) _binary.all.supported BIN_NAME=get
-_binary.all.supported: dep
-	# generic method to build binaries for all oses/architectures
-	@$(MAKE) _binary GOARCH=amd64 GOOS=linux BIN_NAME=${BIN_NAME}
-	@$(MAKE) _binary GOARCH=amd64 GOOS=darwin BIN_NAME=${BIN_NAME}
-	@$(MAKE) _binary GOARCH=386 GOOS=windows BIN_NAME=${BIN_NAME}
-_binary:
-	# generic method to build a binary
-	@cd ./cmd/${BIN_NAME} && go generate
-	@CGO_ENABLED=0 \
-		GO111MODULE=on \
-		GOARCH=${GOARCH} \
-		GOOS=${GOOS} \
-		go build -mod vendor -v -a \
-			-ldflags "-extldflags '-static'" \
-			-o ./bin/${BIN_NAME}-${GOOS}-${GOARCH}${BIN_EXT} \
-			./cmd/${BIN_NAME}
-
 dep:
 	# install dependencies
 	@GO111MODULE=on go mod vendor -v
 	@GO111MODULE=on go mod download
+
+binary:
+	# builds main binary
+	@$(MAKE) _binary ARCH=$(SYS_ARCH) OS=$(SYS_OS) BIN_EXT=$(BIN_EXT) BIN_NAME=semver
+	cp ./bin/semver-$(SYS_OS)-$(SYS_ARCH)$(BIN_EXT) ./bin/semver$(BIN_EXT)
+binaries:
+	# builds all binaries
+	@$(MAKE) _binaries BIN_NAME=semver \
+		& $(MAKE) _binaries BIN_NAME=bump \
+		& $(MAKE) _binaries BIN_NAME=get \
+		& wait
+_binaries:
+	# generic method to build binaries for all oses/architectures
+	@$(MAKE) _binary ARCH=amd64 OS=linux BIN_NAME=${BIN_NAME}
+	@$(MAKE) _binary ARCH=amd64 OS=darwin BIN_NAME=${BIN_NAME}
+	@$(MAKE) _binary ARCH=386 OS=windows BIN_NAME=${BIN_NAME} BIN_EXT=$(BIN_EXT)
+_binary:
+	# generic method to build a binary
+	@cd ./cmd/semver && go generate
+	@CGO_ENABLED=0 \
+		GO111MODULE=on \
+		GOARCH=${ARCH} \
+		GOOS=${OS} \
+		go build -mod vendor -v -a \
+			-ldflags "-extldflags '-static'" \
+			-o ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} \
+			./cmd/${BIN_NAME}
 
 test:
 	# running tests with output coverage at ./c.out
@@ -42,24 +44,20 @@ run_semver:
 	# runs the semver application in development
 	@go run ./cmd/semver ${ARGS}
 
+image:
+	# builds the main docker image
+	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver
 images:
-	# builds the docker image for `semver`
+	# builds all docker images for all binaries
+	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver \
+		& $(MAKE) _image IMAGE_NAME=semver-bump TARGET=bump \
+		& $(MAKE) _image IMAGE_NAME=semver-get TARGET=get \
+		& wait
+_image:
 	@docker build \
 		--file ./build/Dockerfile \
-		--tag usvc/semver:latest \
-		--target semver \
-		.
-	# builds the docker image for `semver-bump`
-	@docker build \
-		--file ./build/Dockerfile \
-		--tag usvc/semver-bump:latest \
-		--target bump \
-		.
-	# builds the docker image for `semver-get`
-	@docker build \
-		--file ./build/Dockerfile \
-		--tag usvc/semver-get:latest \
-		--target get \
+		--tag usvc/${IMAGE_NAME}:latest \
+		--target ${TARGET} \
 		.
 
 publish_github:

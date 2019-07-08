@@ -16,7 +16,7 @@ RUN apk add --no-cache make git
 WORKDIR /app
 COPY . .
 RUN make dep
-RUN make binaries.all
+RUN make binaries
 
 FROM base AS semver
 USER app
