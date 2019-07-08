@@ -16,11 +16,11 @@ RUN apk add --no-cache make git
 WORKDIR /app
 COPY . .
 RUN make dep
-RUN make binaries
+RUN make binaries.all
 
 FROM base AS semver
 USER app
-COPY --from=build /app/bin/semver /semver
+COPY --from=build /app/bin/semver-linux-amd64 /semver
 ENTRYPOINT [ "/semver" ]
 WORKDIR /repo
 LABEL \
@@ -30,7 +30,7 @@ LABEL \
 
 FROM base AS bump
 USER app
-COPY --from=build /app/bin/bump /bump
+COPY --from=build /app/bin/bump-linux-amd64 /bump
 ENTRYPOINT [ "/bump" ]
 WORKDIR /repo
 LABEL \
@@ -40,7 +40,7 @@ LABEL \
 
 FROM base AS get
 USER app
-COPY --from=build /app/bin/get /get
+COPY --from=build /app/bin/get-linux-amd64 /get
 ENTRYPOINT [ "/get" ]
 WORKDIR /repo
 LABEL \

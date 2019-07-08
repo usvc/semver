@@ -1,19 +1,28 @@
 include ./scripts/system/Makefile
 
-binaries: dep
-	# builds a binaries
-	@$(MAKE) _binary BIN_NAME=semver
-	@$(MAKE) _binary BIN_NAME=bump
-	@$(MAKE) _binary BIN_NAME=get
+binary: dep
+	# builds main binary
+	@$(MAKE) _binary GOARCH=$(SYS_ARCH) GOOS=$(SYS_OS) BIN_NAME=semver
+	cp ./bin/semver-$(SYS_OS)-$(SYS_ARCH) ./bin/semver
+binaries.all:
+	@$(MAKE) _binary.all.supported BIN_NAME=semver
+	@$(MAKE) _binary.all.supported BIN_NAME=bump
+	@$(MAKE) _binary.all.supported BIN_NAME=get
+_binary.all.supported: dep
+	# generic method to build binaries for all oses/architectures
+	@$(MAKE) _binary GOARCH=amd64 GOOS=linux BIN_NAME=${BIN_NAME}
+	@$(MAKE) _binary GOARCH=amd64 GOOS=darwin BIN_NAME=${BIN_NAME}
+	@$(MAKE) _binary GOARCH=386 GOOS=windows BIN_NAME=${BIN_NAME}
 _binary:
+	# generic method to build a binary
 	@cd ./cmd/${BIN_NAME} && go generate
 	@CGO_ENABLED=0 \
 		GO111MODULE=on \
-		GOARCH=$(SYS_ARCH) \
-		GOOS=$(SYS_OS) \
+		GOARCH=${GOARCH} \
+		GOOS=${GOOS} \
 		go build -mod vendor -v -a \
 			-ldflags "-extldflags '-static'" \
-			-o ./bin/${BIN_NAME} \
+			-o ./bin/${BIN_NAME}-${GOOS}-${GOARCH}${BIN_EXT} \
 			./cmd/${BIN_NAME}
 
 dep:
