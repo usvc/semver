@@ -64,10 +64,11 @@ publish_github:
 publish_images: images
 	# publishes the docker image
 	@docker push usvc/semver:latest
-	@docker tag usvc/semver:latest usvc/semver:$$(docker run -it -v $$(pwd):/repo usvc/semver-get:latest)
+	# @docker tag usvc/semver:latest usvc/semver:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
+	# @docker push usvc/semver:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
 	@docker push usvc/semver-bump:latest
-	@docker tag usvc/semver-bump:latest usvc/semver-bump:$$(docker run -it -v $$(pwd):/repo usvc/semver-get:latest)
-	@docker push usvc/semver-bump:$$(docker run -it -v $$(pwd):/repo usvc/semver-get:latest)
+	# @docker tag usvc/semver-bump:latest usvc/semver-bump:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
+	# @docker push usvc/semver-bump:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
 	@docker push usvc/semver-get:latest
-	@docker tag usvc/semver-get:latest usvc/semver-get:$$(docker run -it -v $$(pwd):/repo usvc/semver-get:latest)
-	@docker push usvc/semver-get:$$(docker run -it -v $$(pwd):/repo usvc/semver-get:latest)
+	# @docker tag usvc/semver-get:latest usvc/semver-get:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
+	# @docker push usvc/semver-get:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
