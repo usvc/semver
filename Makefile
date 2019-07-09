@@ -51,10 +51,10 @@ image:
 	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver
 images:
 	# builds all docker images for all binaries
-	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver \
-		& $(MAKE) _image IMAGE_NAME=semver-bump TARGET=bump \
-		& $(MAKE) _image IMAGE_NAME=semver-get TARGET=get \
-		& wait
+	# do it sequentially so that we have caches
+	@$(MAKE) _image IMAGE_NAME=semver-get TARGET=get
+	@$(MAKE) _image IMAGE_NAME=semver-bump TARGET=bump
+	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver
 _image:
 	# driver function for building images
 	@docker build \
