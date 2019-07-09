@@ -38,11 +38,10 @@ build images:
 
 bump:
   stage: versioning
-  image: usvc/semver:latest
   script:
     - git checkout master
     - git tag --list
-    - semver + --git --apply
+    - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
     - git tag --list
     - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
 
