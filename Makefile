@@ -1,5 +1,9 @@
 include ./scripts/system/Makefile
 
+# ------------------------------------------------------------------------
+# development recipes
+# ------------------------------------------------------------------------
+
 dep:
 	# install dependencies
 	@GO111MODULE=on go mod vendor -v
@@ -8,6 +12,20 @@ dep:
 test:
 	# running tests with output coverage at ./c.out
 	@go test ./... -cover -coverprofile c.out
+
+run_bump:
+	# runs the bump application in development
+	@go run ./cmd/bump ${ARGS}
+run_get:
+	# runs the get application in development
+	@go run ./cmd/get ${ARGS}
+run_semver:
+	# runs the semver application in development
+	@go run ./cmd/semver ${ARGS}
+
+# ------------------------------------------------------------------------
+# ci pipeline recipes
+# ------------------------------------------------------------------------
 
 binary:
 	# builds main binary
@@ -35,16 +53,6 @@ _binary:
 			-ldflags "-extldflags '-static'" \
 			-o ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} \
 			./cmd/${BIN_NAME}
-
-run_bump:
-	# runs the bump application in development
-	@go run ./cmd/bump ${ARGS}
-run_get:
-	# runs the get application in development
-	@go run ./cmd/get ${ARGS}
-run_semver:
-	# runs the semver application in development
-	@go run ./cmd/semver ${ARGS}
 
 image:
 	# builds the main docker image
