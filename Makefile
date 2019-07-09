@@ -5,6 +5,10 @@ dep:
 	@GO111MODULE=on go mod vendor -v
 	@GO111MODULE=on go mod download
 
+test:
+	# running tests with output coverage at ./c.out
+	@go test ./... -cover -coverprofile c.out
+
 binary:
 	# builds main binary
 	@$(MAKE) _binary ARCH=$(SYS_ARCH) OS=$(SYS_OS) BIN_EXT=$(BIN_EXT) BIN_NAME=semver
@@ -32,14 +36,12 @@ _binary:
 			-o ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} \
 			./cmd/${BIN_NAME}
 
-test:
-	# running tests with output coverage at ./c.out
-	@go test ./... -cover -coverprofile c.out
-
 run_bump:
 	# runs the bump application in development
 	@go run ./cmd/bump ${ARGS}
-
+run_get:
+	# runs the get application in development
+	@go run ./cmd/get ${ARGS}
 run_semver:
 	# runs the semver application in development
 	@go run ./cmd/semver ${ARGS}
@@ -54,11 +56,27 @@ images:
 		& $(MAKE) _image IMAGE_NAME=semver-get TARGET=get \
 		& wait
 _image:
+	# driver function for building images
 	@docker build \
 		--file ./build/Dockerfile \
 		--tag usvc/${IMAGE_NAME}:latest \
 		--target ${TARGET} \
 		.
+
+publish_image: image
+	# publishes main docker image
+	@$(MAKE) _publish_image IMAGE_NAME=semver
+publish_images: images
+	# publishes the docker image
+	@$(MAKE) _publish_image IMAGE_NAME=semver \
+		& $(MAKE) _publish_image IMAGE_NAME=semver-bump \
+		& $(MAKE) _publish_image IMAGE_NAME=semver-get \
+		& wiat
+_publish_image:
+	# driver function for publishing images
+	@docker tag usvc/${IMAGE_NAME}:latest usvc/${IMAGE_NAME}:$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
+	@docker push usvc/${IMAGE_NAME}:latest
+	@docker push usvc/${IMAGE_NAME}:$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
 
 publish_github:
 	# publish repository to github
@@ -67,15 +85,3 @@ publish_github:
 	@git push origin master --tags
 	@git remote set-url origin $$(cat ./.publish_github)
 	@rm -rf ./.publish_github
-
-publish_images: images
-	# publishes the docker image
-	@docker push usvc/semver:latest
-	# @docker tag usvc/semver:latest usvc/semver:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
-	# @docker push usvc/semver:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
-	@docker push usvc/semver-bump:latest
-	# @docker tag usvc/semver-bump:latest usvc/semver-bump:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
-	# @docker push usvc/semver-bump:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
-	@docker push usvc/semver-get:latest
-	# @docker tag usvc/semver-get:latest usvc/semver-get:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)
-	# @docker push usvc/semver-get:$$(docker run -v $$(pwd):/repo usvc/semver-get:latest)

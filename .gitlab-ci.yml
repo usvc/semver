@@ -5,6 +5,7 @@ stages:
   - validation
   - versioning
   - release
+  - publish
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
@@ -37,8 +38,13 @@ build images:
 
 bump:
   stage: versioning
+  image: usvc/semver:latest
   script:
-    - 'printf -- "placeholder - we should bump the version here and push the tag back to gitlab"'
+    - git checkout master
+    - git tag --list
+    - semver + --git --apply
+    - git tag --list
+    - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
 
 docker image:
   stage: release
@@ -46,3 +52,8 @@ docker image:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
     - make publish_images
     - docker logout
+
+to github:
+  stage: publish
+  script:
+    - 'printf -- "placeholder - push the repo to github at this stage"'
