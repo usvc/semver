@@ -71,7 +71,7 @@ publish_images: images
 	@$(MAKE) _publish_image IMAGE_NAME=semver \
 		& $(MAKE) _publish_image IMAGE_NAME=semver-bump \
 		& $(MAKE) _publish_image IMAGE_NAME=semver-get \
-		& wiat
+		& wait
 _publish_image:
 	# driver function for publishing images
 	@docker tag usvc/${IMAGE_NAME}:latest usvc/${IMAGE_NAME}:$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
