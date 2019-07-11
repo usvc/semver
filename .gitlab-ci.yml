@@ -40,10 +40,10 @@ bump:
   stage: versioning
   before_script:
     - mkdir -p ~/.ssh
-    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ./.ssh/id_rsa'
+    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
     - echo 'host github.com' > ~/.ssh/config
     - echo '  Hostname github.com' >> ~/.ssh/config
-    - echo "  IdentityFile $(pwd)/.ssh/id_rsa" >> ~/.ssh/config
+    - echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
     - echo '  User git' >> ~/.ssh/config
   script:
     - git remote set-url origin "${GITLAB_DEPLOY_URL}"
