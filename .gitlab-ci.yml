@@ -9,34 +9,38 @@ stages:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-# run tests:
-#   stage: validation
-#   artifacts:
-#     untracked: false
-#     expire_in: 3 days
-#     paths:
-#       - ./c.out
-#   script:
-#     - make dep
-#     - make test
+run tests:
+  only: ["master"]
+  stage: validation
+  artifacts:
+    untracked: false
+    expire_in: 3 days
+    paths:
+      - ./c.out
+  script:
+    - make dep
+    - make test
 
-# build binary:
-#   stage: validation
-#   artifacts:
-#     untracked: false
-#     expire_in: 3 days
-#     paths:
-#       - ./bin/semver
-#   script:
-#     - make dep
-#     - make binaries
+build binary:
+  only: ["master"]
+  stage: validation
+  artifacts:
+    untracked: false
+    expire_in: 3 days
+    paths:
+      - ./bin/semver
+  script:
+    - make dep
+    - make binaries
 
-# build images:
-#   stage: validation
-#   script:
-#     - make images
+build images:
+  only: ["master"]
+  stage: validation
+  script:
+    - make images
 
 bump:
+  only: ["master"]
   stage: versioning
   before_script:
     - mkdir -p ~/.ssh
