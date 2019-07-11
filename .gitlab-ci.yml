@@ -43,9 +43,13 @@ bump:
     - git tag --list
     - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
     - git tag --list
+    - 'printf -- "${GITLAB_DEPLOY_KEY}" > ~/id_rsa'
+    - git branch
+    - git push --tags
     - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
 
 docker image:
+  only: ["tags"]
   stage: release
   script:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
@@ -53,6 +57,7 @@ docker image:
     - docker logout
 
 to github:
+  only: ["tags"]
   stage: publish
   script:
     - 'printf -- "placeholder - push the repo to github at this stage"'

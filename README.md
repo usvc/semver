@@ -6,6 +6,8 @@ An easy-peasy CLI tool to bump semver versions.
 
 # Installation
 
+## Via Go
+
 ```sh
 go get -v -u gitlab.com/usvc/utils/semver/cmd/semver;
 ```
@@ -136,6 +138,7 @@ Go to the settings page under CI/CD > Variables and input the following CI varia
 | `DOCKER_REGISTRY_URL` | URL to the Docker registry to push to |
 | `DOCKER_REGISTRY_USERNAME` | Username of the Docker registry to push to |
 | `DOCKER_REGISTRY_PASSWORD` | Password of the Docker registry user |
+| `GITLAB_DEPLOY_KEY` | Base64 encoded private key whose public key match is a Deploy Key in the Gitlab pipeline settings |
 
 # License
 

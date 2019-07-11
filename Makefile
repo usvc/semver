@@ -93,3 +93,14 @@ publish_github:
 	@git push origin master --tags
 	@git remote set-url origin $$(cat ./.publish_github)
 	@rm -rf ./.publish_github
+
+# ------------------------------------------------------------------------
+# misc recipes
+# ------------------------------------------------------------------------
+
+deploy_keys:
+	@mkdir -p ./.ssh
+	# creating keypair...
+	@ssh-keygen -t rsa -b 4096 -f ./.ssh/id_rsa -N ""
+	# creating base64 encoded version for usage in ci variables...
+	@cat ./.ssh/id_rsa | base64 -w 0 > ./.ssh/id_rsa.b64

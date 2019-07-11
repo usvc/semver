@@ -5,6 +5,7 @@ vendor
 
 # make artifacts
 .publish_origin
+.ssh
 
 # not ready stuff
 .travis.yml
