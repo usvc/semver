@@ -45,6 +45,7 @@ bump:
     - echo '  Hostname github.com' >> ~/.ssh/config
     - echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
     - echo '  User git' >> ~/.ssh/config
+    - ssh-keygen -R gitlab.com
   script:
     - git remote set-url origin "${GITLAB_DEPLOY_URL}"
     - git checkout master
