@@ -41,6 +41,7 @@ bump:
   before_script:
     - mkdir -p ~/.ssh
     - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
+    - chmod 400 ~/.ssh/id_rsa
     - echo 'host github.com' > ~/.ssh/config
     - echo '  Hostname github.com' >> ~/.ssh/config
     - echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
@@ -58,7 +59,7 @@ bump:
     - git push origin master --verbose --tags
     - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
   after_script:
-    - rm -rf ./.ssh/id_rsa
+    - rm -rf ~/.ssh/id_rsa
     - rm -rf ~/.ssh/config
 
 docker image:
