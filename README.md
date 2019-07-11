@@ -139,6 +139,7 @@ Go to the settings page under CI/CD > Variables and input the following CI varia
 | `DOCKER_REGISTRY_USERNAME` | Username of the Docker registry to push to |
 | `DOCKER_REGISTRY_PASSWORD` | Password of the Docker registry user |
 | `GITLAB_DEPLOY_KEY` | Base64 encoded private key whose public key match is a Deploy Key in the Gitlab pipeline settings |
+| `GITLAB_DEPLOY_URL` | SSH clone URL of the repository to push new version tags to |
 
 # License
 

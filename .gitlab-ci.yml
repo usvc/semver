@@ -9,36 +9,37 @@ stages:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-run tests:
-  stage: validation
-  artifacts:
-    untracked: false
-    expire_in: 3 days
-    paths:
-      - ./c.out
-  script:
-    - make dep
-    - make test
+# run tests:
+#   stage: validation
+#   artifacts:
+#     untracked: false
+#     expire_in: 3 days
+#     paths:
+#       - ./c.out
+#   script:
+#     - make dep
+#     - make test
 
-build binary:
-  stage: validation
-  artifacts:
-    untracked: false
-    expire_in: 3 days
-    paths:
-      - ./bin/semver
-  script:
-    - make dep
-    - make binaries
+# build binary:
+#   stage: validation
+#   artifacts:
+#     untracked: false
+#     expire_in: 3 days
+#     paths:
+#       - ./bin/semver
+#   script:
+#     - make dep
+#     - make binaries
 
-build images:
-  stage: validation
-  script:
-    - make images
+# build images:
+#   stage: validation
+#   script:
+#     - make images
 
 bump:
   stage: versioning
   script:
+    - git remote set-url origin "${GITLAB_DEPLOY_URL}"
     - git checkout master
     - git tag --list
     - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
