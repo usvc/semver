@@ -44,11 +44,11 @@ bump:
     - git tag --list
     - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
     - git tag --list
-    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
+    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ./.ssh/id_rsa'
     - git branch
     - echo 'host github.com' > ~/.ssh/config
     - echo '  Hostname github.com' >> ~/.ssh/config
-    - echo '  IdentityFile ~/.ssh/id_rsa' >> ~/.ssh/config
+    - echo "  IdentityFile $(pwd)/.ssh/id_rsa" >> ~/.ssh/config
     - echo '  User git' >> ~/.ssh/config
     - git push --tags
     - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
