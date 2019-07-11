@@ -52,6 +52,8 @@ bump:
     - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
     - git tag --list
     - git branch
+    - git remote -v
+    - md5sum ~/.ssh/id_rsa
     - git push --tags
     - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
   after_script:
