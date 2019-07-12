@@ -57,7 +57,7 @@ build images:
 #     - rm -rf ~/.ssh/*
 
 docker image:
-  only: ["tags"]
+  # only: ["tags"]
   stage: release
   script:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
@@ -65,7 +65,7 @@ docker image:
     - docker logout
 
 to github:
-  only: ["tags"]
+  # only: ["tags"]
   stage: publish
   before_script:
     - mkdir -p ~/.ssh
