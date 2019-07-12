@@ -42,6 +42,7 @@ variables:
 bump:
   only: ["master"]
   stage: versioning
+  image: usvc/semver:latest
   before_script:
     - mkdir -p ~/.ssh
     - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
@@ -50,7 +51,7 @@ bump:
   script:
     - git remote set-url origin "${GITLAB_DEPLOY_URL}"
     - git checkout master
-    - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
+    - semver bump --git --apply
     - git push origin master --verbose --tags
   after_script:
     - rm -rf ~/.ssh/*

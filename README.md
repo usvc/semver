@@ -4,6 +4,30 @@
 
 An easy-peasy CLI tool to bump semver versions.
 
+- [Semver](#semver)
+- [Installation](#installation)
+  - [Via Go](#via-go)
+- [Usage](#usage)
+  - [Bump a provided version](#bump-a-provided-version)
+  - [Bump a version using Git tags](#bump-a-version-using-git-tags)
+  - [Bump Git tag version](#bump-git-tag-version)
+  - [Usage via Dockerfile](#usage-via-dockerfile)
+  - [Usage in a CI pipeline](#usage-in-a-ci-pipeline)
+    - [GitLab CI](#gitlab-ci)
+  - [Usage notes](#usage-notes)
+- [Development](#development)
+  - [Install dependencies](#install-dependencies)
+  - [Run tests](#run-tests)
+  - [Run the Go code](#run-the-go-code)
+    - [Without arguments](#without-arguments)
+    - [With arguments](#with-arguments)
+  - [Create semver binary](#create-semver-binary)
+  - [Configuring the CI](#configuring-the-ci)
+    - [Gitlab](#gitlab)
+- [License](#license)
+
+- - -
+
 # Installation
 
 ## Via Go
@@ -11,6 +35,8 @@ An easy-peasy CLI tool to bump semver versions.
 ```sh
 go get -v -u gitlab.com/usvc/utils/semver/cmd/semver;
 ```
+
+- - -
 
 # Usage
 
@@ -120,6 +146,8 @@ Set the `DEPLOY_URL` environment variable from your CI/CD settings to the SSH cl
 
 - If the major (`-M`), minor (`-m`), patch (`-p`), or label (`-l`) flag is not specified, the patch will be bumped by default.
 - If more than one instance of a version indicator flag is specified, the lowest priority will be executed. For example, if both `-M` and `-m` is specified, `-m` will be applied.
+
+- - -
 
 # Development
 
