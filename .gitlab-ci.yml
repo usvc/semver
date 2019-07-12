@@ -5,6 +5,7 @@ stages:
   - validation
   - versioning
   - release
+  - validate_release
   - publish
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -63,6 +64,13 @@ docker image:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
     - make publish_images
     - docker logout
+
+docker image works:
+  # only: ["tags"]
+  stage: validate_release
+  image: usvc/semver:gitlab-latest
+  script:
+    - semver bump --git
 
 to github:
   # only: ["tags"]
