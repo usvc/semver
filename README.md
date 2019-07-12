@@ -88,6 +88,32 @@ docker run -it -v $(pwd):/repo usvc/semver:latest ${SUBCOMMANDS_AND_FLAGS}
 
 > Replace `${SUBCOMMANDS_AND_FLAGS}` with whatever you would run behind the main `semver` command.
 
+## Usage in CI pipeline
+
+### GitLab CI
+
+An example version bump job together with pushing back to the repository can be as such:
+
+```yaml
+bump:
+  only: ["master"]
+  stage: versioning
+  before_script:
+    - mkdir -p ~/.ssh
+    - 'printf -- "${DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
+    - chmod 600 -R ~/.ssh/id_rsa
+    - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+  script:
+    - git remote set-url origin "${GITLAB_DEPLOY_URL}"
+    - git checkout master
+    - docker run -v $(pwd):/repo usvc/semver:latest + --git --apply
+    - git push origin master --verbose --tags
+  after_script:
+    - rm -rf ~/.ssh/*
+```
+
+Set the `DEPLOY_KEY` environment variable to a base64 encoded version of your private key. To generate a private/public key pair, use `ssh-keygen -t rsa -b 4096`. To encode it into base64 without line breaks, `cat` it and pipe it to `base64 -w 0` (eg. `cat ./path/to/id_rsa | base64 -w 0 > ./path/to/id_rsa.b64`).
+
 ## Usage notes
 
 - If the major (`-M`), minor (`-m`), patch (`-p`), or label (`-l`) flag is not specified, the patch will be bumped by default.

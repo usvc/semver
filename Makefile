@@ -88,12 +88,9 @@ _publish_image:
 
 publish_github:
 	# publish repository to github
-	@git remote get-url origin > ./.publish_github
-	@git remote set-url origin git@github.com:usvc/semver.git
+	@git remote add downstream git@github.com:usvc/semver.git
 	@git fetch
-	@git push origin master --tags --force
-	@git remote set-url origin $$(cat ./.publish_github)
-	@rm -rf ./.publish_github
+	@git push -u downstream master --tags --force
 
 # ------------------------------------------------------------------------
 # misc recipes
