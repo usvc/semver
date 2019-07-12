@@ -47,3 +47,6 @@ LABEL \
   usage="docker run -it -v $(pwd):/repo usvc/semver-get:latest -h" \
   container_url="https://hub.docker.com/r/usvc/semver-get" \
   application_url="https://gitlab.com/usvc/utils/semver/tree/master/cmd/get"
+
+FROM usvc/ci-docker AS gitlab
+COPY --from=build /app/bin/semver-linux-amd64 /bin/semver
