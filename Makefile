@@ -63,11 +63,12 @@ images:
 	@$(MAKE) _image IMAGE_NAME=semver-get TARGET=get
 	@$(MAKE) _image IMAGE_NAME=semver-bump TARGET=bump
 	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver
+	@$(MAKE) _image IMAGE_NAME=semver TARGET=gitlab PRE_TAG="gitlab-"
 _image:
 	# driver function for building images
 	@docker build \
 		--file ./build/Dockerfile \
-		--tag usvc/${IMAGE_NAME}:latest \
+		--tag usvc/${IMAGE_NAME}:${PRE_TAG}latest \
 		--target ${TARGET} \
 		.
 
@@ -79,12 +80,13 @@ publish_images: images
 	@$(MAKE) _publish_image IMAGE_NAME=semver \
 		& $(MAKE) _publish_image IMAGE_NAME=semver-bump \
 		& $(MAKE) _publish_image IMAGE_NAME=semver-get \
+		& $(MAKE) _publish_image IMAGE_NAME=semver PRE_TAG="gitlab-" \
 		& wait
 _publish_image:
 	# driver function for publishing images
-	@docker tag usvc/${IMAGE_NAME}:latest usvc/${IMAGE_NAME}:$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
-	@docker push usvc/${IMAGE_NAME}:latest
-	@docker push usvc/${IMAGE_NAME}:$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
+	@docker tag usvc/${IMAGE_NAME}:${PRE_TAG}latest usvc/${IMAGE_NAME}:${PRE_TAG}$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
+	@docker push usvc/${IMAGE_NAME}:${PRE_TAG}latest
+	@docker push usvc/${IMAGE_NAME}:${PRE_TAG}$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
 
 publish_github:
 	# publish repository to github
