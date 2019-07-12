@@ -59,8 +59,7 @@ bump:
     - git push origin master --verbose --tags
     - 'printf -- "placeholder - bump the version here and push the tag back to gitlab"'
   after_script:
-    - rm -rf ~/.ssh/id_rsa
-    - rm -rf ~/.ssh/config
+    - rm -rf ~/.ssh/*
 
 # docker image:
 #   only: ["tags"]
@@ -79,4 +78,7 @@ to github:
     - chmod 600 -R ~/.ssh/id_rsa
     - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
   script:
+    - make publish_github
     - 'printf -- "placeholder - push the repo to github at this stage"'
+  after_script:
+    - rm -rf ~/.ssh/*
