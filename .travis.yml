@@ -1,0 +1,27 @@
+sudo: required
+language: go
+go:
+  - "1.12.x"
+services:
+  - docker
+stages:
+  - build
+  - deploy
+git:
+  submodules: true
+  quiet: false
+deploy:
+  provider: releases
+  api_key: ${GITHUB_OAUTH_TOKEN}
+  file_glob: true
+  file: bin/*
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
+include:
+  jobs:
+    - stage: build
+      script:
+        - make binaries
+

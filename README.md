@@ -8,6 +8,7 @@ An easy-peasy CLI tool to bump semver versions.
 - [Installation](#installation)
   - [Via Go](#via-go)
 - [Usage](#usage)
+  - [CLI Help](#cli-help)
   - [Bump a provided version](#bump-a-provided-version)
   - [Bump a version using Git tags](#bump-a-version-using-git-tags)
   - [Bump Git tag version](#bump-git-tag-version)
@@ -33,12 +34,20 @@ An easy-peasy CLI tool to bump semver versions.
 ## Via Go
 
 ```sh
-go get -v -u gitlab.com/usvc/utils/semver/cmd/semver;
+go get -v -u github.com/usvc/semver/cmd/semver
 ```
 
 - - -
 
 # Usage
+
+## CLI Help
+
+**Use Case** - As a developer, I'd like to find out how to use `semver` from the CLI
+
+```sh
+semver -h
+```
 
 ## Bump a provided version
 

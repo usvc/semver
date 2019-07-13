@@ -53,6 +53,7 @@ _binary:
 			-ldflags "-extldflags '-static'" \
 			-o ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} \
 			./cmd/${BIN_NAME}
+	@sha256sum -b ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} | cut -f 1 -d ' ' > ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT}.sha256
 
 image:
 	# builds the main docker image
