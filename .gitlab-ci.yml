@@ -76,8 +76,6 @@ to github:
   script:
     - git config --global user.email "usvc.semver@usvc.dev"
     - git config --global user.name "usvc_publisher"
-    
     - make publish_github
-    - 'printf -- "placeholder - push the repo to github at this stage"'
   after_script:
     - rm -rf ~/.ssh/*
