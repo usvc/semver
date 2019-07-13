@@ -14,14 +14,15 @@ deploy:
   provider: releases
   api_key: ${GITHUB_OAUTH_TOKEN}
   file_glob: true
-  file: bin/*
+  file: ./bin/*
   skip_cleanup: true
   on:
     branch: master
     tags: true
-include:
-  jobs:
+jobs:
+  include:
     - stage: build
       script:
         - make binaries
+        - ls -al ./bin
 
