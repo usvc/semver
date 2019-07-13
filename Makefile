@@ -92,6 +92,7 @@ publish_github:
 	# publish repository to github
 	@git remote add downstream git@github.com:usvc/semver.git
 	@git fetch
+	@git commit --allow-empty -m "from gitlab to github"
 	@git push -u downstream master --tags --force
 
 # ------------------------------------------------------------------------

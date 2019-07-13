@@ -11,7 +11,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 run tests:
-  only: ["master"]
+  # only: ["master"]
   stage: validation
   artifacts:
     untracked: false
@@ -23,7 +23,7 @@ run tests:
     - make test
 
 build binary:
-  only: ["master"]
+  # only: ["master"]
   stage: validation
   artifacts:
     untracked: false
@@ -35,27 +35,27 @@ build binary:
     - make binaries
 
 build images:
-  only: ["master"]
+  # only: ["master"]
   stage: validation
   script:
     - make images
 
-# bump:
-#   only: ["master"]
-#   stage: versioning
-#   image: usvc/semver:latest
-#   before_script:
-#     - mkdir -p ~/.ssh
-#     - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
-#     - chmod 600 -R ~/.ssh/id_rsa
-#     - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
-#   script:
-#     - git remote set-url origin "${GITLAB_DEPLOY_URL}"
-#     - git checkout master
-#     - semver bump --git --apply
-#     - git push origin master --verbose --tags
-#   after_script:
-#     - rm -rf ~/.ssh/*
+bump:
+  # only: ["master"]
+  stage: versioning
+  image: usvc/semver:gitlab-latest
+  before_script:
+    - mkdir -p ~/.ssh
+    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
+    - chmod 600 -R ~/.ssh/id_rsa
+    - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+  script:
+    - git remote set-url origin "${GITLAB_DEPLOY_URL}"
+    - git checkout master
+    - semver bump --git --apply
+    - git push origin master --verbose --tags
+  after_script:
+    - rm -rf ~/.ssh/*
 
 docker image:
   # only: ["tags"]
@@ -64,13 +64,6 @@ docker image:
     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
     - make publish_images
     - docker logout
-
-docker image works:
-  # only: ["tags"]
-  stage: validate_release
-  image: usvc/semver:gitlab-latest
-  script:
-    - semver bump --git
 
 to github:
   # only: ["tags"]
