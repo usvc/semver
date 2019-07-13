@@ -23,6 +23,5 @@ jobs:
   include:
     - stage: build
       script:
+        - make dep
         - make binaries
-        - ls -al ./bin
-
