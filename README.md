@@ -1,6 +1,9 @@
 # Semver
 
+[![Latest Version](https://badge.fury.io/gh/usvc%2Fsemver.svg)](https://github.com/usvc/semver/releases)
 [![pipeline status](https://gitlab.com/usvc/utils/semver/badges/master/pipeline.svg)](https://gitlab.com/usvc/utils/semver/commits/master)
+[![Build Status](https://travis-ci.org/usvc/semver.svg?branch=master)](https://travis-ci.org/usvc/semver)
+
 
 An easy-peasy CLI tool to bump semver versions.
 

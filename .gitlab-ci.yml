@@ -10,38 +10,38 @@ stages:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-# run tests:
-#   # only: ["master"]
-#   stage: validation
-#   artifacts:
-#     untracked: false
-#     expire_in: 3 days
-#     paths:
-#       - ./c.out
-#   script:
-#     - make dep
-#     - make test
+run tests:
+  only: ["master"]
+  stage: validation
+  artifacts:
+    untracked: false
+    expire_in: 3 days
+    paths:
+      - ./c.out
+  script:
+    - make dep
+    - make test
 
-# build binary:
-#   # only: ["master"]
-#   stage: validation
-#   artifacts:
-#     untracked: false
-#     expire_in: 3 days
-#     paths:
-#       - ./bin/semver
-#   script:
-#     - make dep
-#     - make binaries
+build binary:
+  only: ["master"]
+  stage: validation
+  artifacts:
+    untracked: false
+    expire_in: 3 days
+    paths:
+      - ./bin/semver
+  script:
+    - make dep
+    - make binaries
 
-# build images:
-#   # only: ["master"]
-#   stage: validation
-#   script:
-#     - make images
+build images:
+  only: ["master"]
+  stage: validation
+  script:
+    - make images
 
 bump:
-  # only: ["master"]
+  only: ["master"]
   stage: versioning
   image: usvc/semver:gitlab-latest
   before_script:
@@ -57,16 +57,16 @@ bump:
   after_script:
     - rm -rf ~/.ssh/*
 
-# docker image:
-#   # only: ["tags"]
-#   stage: release
-#   script:
-#     - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
-#     - make publish_images
-#     - docker logout
+docker image:
+  only: ["tags"]
+  stage: release
+  script:
+    - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
+    - make publish_images
+    - docker logout
 
 to github:
-  # only: ["tags"]
+  only: ["tags"]
   stage: publish
   before_script:
     - mkdir -p ~/.ssh
