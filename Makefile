@@ -92,9 +92,8 @@ _publish_image:
 publish_github:
 	# publish repository to github
 	@git remote set-url --add --push origin git@github.com:usvc/semver.git
-	@git fetch
+	# @git fetch
 	@git checkout master
-	# @git commit --allow-empty -m "from gitlab to github"
 	@git push -u origin master --tags --force
 	@git checkout -
 
