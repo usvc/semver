@@ -40,22 +40,22 @@ variables:
 #   script:
 #     - make images
 
-# bump:
-#   # only: ["master"]
-#   stage: versioning
-#   image: usvc/semver:gitlab-latest
-#   before_script:
-#     - mkdir -p ~/.ssh
-#     - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
-#     - chmod 600 -R ~/.ssh/id_rsa
-#     - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
-#   script:
-#     - git remote set-url origin "${GITLAB_DEPLOY_URL}"
-#     - git checkout master
-#     - semver bump --git --apply
-#     - git push origin master --verbose --tags
-#   after_script:
-#     - rm -rf ~/.ssh/*
+bump:
+  # only: ["master"]
+  stage: versioning
+  image: usvc/semver:gitlab-latest
+  before_script:
+    - mkdir -p ~/.ssh
+    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
+    - chmod 600 -R ~/.ssh/id_rsa
+    - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+  script:
+    - git remote set-url origin "${GITLAB_DEPLOY_URL}"
+    - git checkout master
+    - semver bump --git --apply
+    - git push origin master --verbose --tags
+  after_script:
+    - rm -rf ~/.ssh/*
 
 # docker image:
 #   # only: ["tags"]
