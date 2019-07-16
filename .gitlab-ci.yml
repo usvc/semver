@@ -52,7 +52,7 @@ bump:
   script:
     - git remote set-url origin "${GITLAB_DEPLOY_URL}"
     - git checkout master
-    - semver bump --git --apply
+    - semver bump ${BUMP_TYPE} --git --apply
     - git push origin master --verbose --tags
   after_script:
     - rm -rf ~/.ssh/*
