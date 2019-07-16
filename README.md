@@ -11,6 +11,7 @@ An easy-peasy CLI tool to bump semver versions.
   - [Via Go Get](#via-go-get)
   - [Binary Download](#binary-download)
   - [Via cURL](#via-curl)
+  - [Via `/bin/sh`](#via-binsh)
 - [Usage](#usage)
   - [CLI Help](#cli-help)
   - [Bump a provided version](#bump-a-provided-version)
@@ -54,6 +55,14 @@ curl -oL https://github.com/usvc/semver/releases/download/v0.3.17/semver-linux-a
 # macos
 curl -oL https://github.com/usvc/semver/releases/download/v0.3.17/semver-darwin-amd64
 ```
+
+## Via `/bin/sh`
+
+```sh
+curl -L https://raw.githubusercontent.com/usvc/semver/master/init/install.sh | sh
+```
+
+> This script downloads the latest binary to your working directory.
 
 - - -
 

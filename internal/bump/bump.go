@@ -86,17 +86,20 @@ func Action(c *cli.Context) error {
 	} else {
 		input = utils.GetCLIInput(c)
 	}
+
 	if len(input) == 0 {
 		cli.ShowSubcommandHelp(c)
 		os.Exit(-1)
 		return nil
 	}
+
 	if !semver.IsValid(input) {
 		err := fmt.Errorf("'%s' does not seem to be a semver version", input)
 		fmt.Println(err)
 		os.Exit(1)
 		return err
 	}
+
 	semverInput := semver.New(input)
 	currentVersion := semverInput.ToString()
 	switch {
