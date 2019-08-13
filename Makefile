@@ -61,15 +61,16 @@ image:
 images:
 	# builds all docker images for all binaries
 	# do it sequentially so that we have caches
-	@$(MAKE) _image IMAGE_NAME=semver-get TARGET=get
-	@$(MAKE) _image IMAGE_NAME=semver-bump TARGET=bump
 	@$(MAKE) _image IMAGE_NAME=semver TARGET=semver
-	@$(MAKE) _image IMAGE_NAME=semver TARGET=gitlab PRE_TAG="gitlab-"
+	@$(MAKE) _image IMAGE_NAME=semver-bump TARGET=bump
+	@$(MAKE) _image IMAGE_NAME=semver-get TARGET=get
+	@$(MAKE) _image IMAGE_NAME=semver TARGET=ci TAG_PREFIX="ci-"
+	@$(MAKE) _image IMAGE_NAME=semver TARGET=gitlab TAG_PREFIX="gitlab-"
 _image:
 	# driver function for building images
 	@docker build \
 		--file ./build/Dockerfile \
-		--tag usvc/${IMAGE_NAME}:${PRE_TAG}latest \
+		--tag usvc/${IMAGE_NAME}:${TAG_PREFIX}latest \
 		--target ${TARGET} \
 		.
 
@@ -81,18 +82,18 @@ publish_images: images
 	@$(MAKE) _publish_image IMAGE_NAME=semver \
 		& $(MAKE) _publish_image IMAGE_NAME=semver-bump \
 		& $(MAKE) _publish_image IMAGE_NAME=semver-get \
-		& $(MAKE) _publish_image IMAGE_NAME=semver PRE_TAG="gitlab-" \
+		& $(MAKE) _publish_image IMAGE_NAME=semver TAG_PREFIX="ci-" \
+		& $(MAKE) _publish_image IMAGE_NAME=semver TAG_PREFIX="gitlab-" \
 		& wait
 _publish_image:
 	# driver function for publishing images
-	@docker tag usvc/${IMAGE_NAME}:${PRE_TAG}latest usvc/${IMAGE_NAME}:${PRE_TAG}$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
-	@docker push usvc/${IMAGE_NAME}:${PRE_TAG}latest
-	@docker push usvc/${IMAGE_NAME}:${PRE_TAG}$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
+	@docker tag usvc/${IMAGE_NAME}:${TAG_PREFIX}latest usvc/${IMAGE_NAME}:${TAG_PREFIX}$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
+	@docker push usvc/${IMAGE_NAME}:${TAG_PREFIX}latest
+	@docker push usvc/${IMAGE_NAME}:${TAG_PREFIX}$$(docker run usvc/semver:latest -v | cut -f 3 -d ' ' | sed -e 's/v//g')
 
 publish_github:
 	# publish repository to github
 	@git remote set-url --add --push origin git@github.com:usvc/semver.git
-	# @git fetch
 	@git checkout master
 	@git push -u origin master --tags --force
 	@git checkout -
