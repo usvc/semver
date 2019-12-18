@@ -66,7 +66,7 @@ var Flags = []cli.Flag{
 }
 
 func Action(c *cli.Context) error {
-	var input string
+	input := "v0.0.0"
 	if c.Bool("git") {
 		var tags semver.Semvers
 		cwd := utils.GetCurrentWorkingDirectory()
@@ -82,7 +82,9 @@ func Action(c *cli.Context) error {
 			}
 		}
 		sort.Sort(tags)
-		input = tags[len(tags)-1].ToString()
+		if len(tags) > 0 {
+			input = tags[len(tags)-1].ToString()
+		}
 	} else {
 		input = utils.GetCLIInput(c)
 	}
