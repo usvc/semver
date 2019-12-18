@@ -11,7 +11,7 @@ An easy-peasy CLI tool to bump semver versions.
   - [Via Go Get](#via-go-get)
   - [Binary Download](#binary-download)
   - [Via cURL](#via-curl)
-  - [Via `/bin/sh`](#via-binsh)
+  - [Via /bin/sh](#via-binsh)
 - [Usage](#usage)
   - [CLI Help](#cli-help)
   - [Bump a provided version](#bump-a-provided-version)
@@ -19,7 +19,8 @@ An easy-peasy CLI tool to bump semver versions.
   - [Bump Git tag version](#bump-git-tag-version)
   - [Usage via Dockerfile](#usage-via-dockerfile)
   - [Usage in a CI pipeline](#usage-in-a-ci-pipeline)
-    - [GitLab CI](#gitlab-ci)
+    - [GitLab CI (Automated)](#gitlab-ci-automated)
+    - [GitLab CI (Manual)](#gitlab-ci-manual)
   - [Usage notes](#usage-notes)
 - [Development](#development)
   - [Install dependencies](#install-dependencies)
@@ -152,7 +153,34 @@ docker run -it -v $(pwd):/repo usvc/semver:latest ${SUBCOMMANDS_AND_FLAGS}
 
 ## Usage in a CI pipeline
 
-### GitLab CI
+### GitLab CI (Automated)
+
+To use the inbuilt scripts, you need to define the following variables in your CI pipeline:
+
+| Key | Description |
+| ---: | :--- |
+| `BASE64_DEPLOY_KEY` | Base64-encoded deploy key |
+| `GIT_EMAIL` | Email of the Git user to use to push |
+| `GIT_NAME` | Name of the Git user to use to push |
+| `REPO_HOSTNAME` | Hostname of the repository |
+| `REPO_URL` | Repository clone URL (the SSH one) |
+
+Then use the following job specification:
+
+```yaml
+bump:
+  only: ["master"]
+  stage: versioning
+  image: usvc/semver:gitlab-latest
+  before_script:
+    - bump-before
+  script:
+    - bump-script
+  after_script:
+    - bump-after
+```
+
+### GitLab CI (Manual)
 
 An example version bump job together with pushing back to the repository can be as such:
 

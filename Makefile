@@ -50,9 +50,10 @@ _binary:
 		GOARCH=${ARCH} \
 		GOOS=${OS} \
 		go build -mod vendor -v -a \
-			-ldflags "-extldflags '-static'" \
-			-o ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} \
+			-ldflags "-s -w -extldflags '-static'" \
+			-o ./bin/${BIN_NAME}-${OS}-${ARCH}-uncompressed${BIN_EXT} \
 			./cmd/${BIN_NAME}
+	@upx -9 -o ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} ./bin/${BIN_NAME}-${OS}-${ARCH}-uncompressed${BIN_EXT}
 	@sha256sum -b ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT} | cut -f 1 -d ' ' > ./bin/${BIN_NAME}-${OS}-${ARCH}${BIN_EXT}.sha256
 
 image:

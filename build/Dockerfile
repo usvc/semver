@@ -12,7 +12,7 @@ LABEL maintainer="@zephinzer" \
 FROM golang:alpine AS build
 RUN apk update --no-cache
 RUN apk upgrade --no-cache
-RUN apk add --no-cache make git
+RUN apk add --no-cache make git upx
 WORKDIR /app
 COPY . .
 RUN make dep
@@ -50,7 +50,13 @@ LABEL \
 
 FROM usvc/ci-docker:latest AS ci
 COPY --from=build /app/bin/semver-linux-amd64 /bin/semver
+COPY ./scripts/ci/bump/before_script.sh /bin/bump-before
+RUN chmod +x /bin/bump-before
+COPY ./scripts/ci/bump/script.sh /bin/bump-script
+RUN chmod +x /bin/bump-script
+COPY ./scripts/ci/bump/after_script.sh /bin/bump-after
+RUN chmod +x /bin/bump-after
 
 FROM ci AS gitlab
-ENV DOCKER_HOST=tcp://docker:2375/ \
-  DOCKER_DRIVER=overlay2
+ENV DOCKER_HOST=tcp://docker:2375/
+ENV DOCKER_DRIVER=overlay2
