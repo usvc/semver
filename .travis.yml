@@ -23,5 +23,6 @@ jobs:
   include:
     - stage: build
       script:
+        - apt-get install -y upx
         - make dep
         - make binaries
