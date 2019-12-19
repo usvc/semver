@@ -29,7 +29,9 @@ build binary:
     untracked: false
     expire_in: 3 days
     paths:
-      - ./bin/semver
+      - ./bin/semver-linux-amd64
+      - ./bin/semver-darwin-amd64
+      - ./bin/semver-windows-386
   script:
     - make dep
     - make binaries
