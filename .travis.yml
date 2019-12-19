@@ -23,7 +23,7 @@ jobs:
   include:
     - stage: build
       before_script:
-        - sudo apt-get install -y upx
+        - sudo apt-get -y install upx
       script:
         - make dep
         - make binaries
