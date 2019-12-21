@@ -1,4 +1,4 @@
-FROM alpine:3.9 AS base
+FROM alpine:3 AS base
 RUN apk update --no-cache
 RUN apk upgrade --no-cache
 RUN apk add --no-cache git make curl jq ca-certificates
@@ -48,7 +48,7 @@ LABEL \
   container_url="https://hub.docker.com/r/usvc/semver-get" \
   application_url="https://gitlab.com/usvc/utils/semver/tree/master/cmd/get"
 
-FROM usvc/ci-docker:latest AS ci
+FROM base AS ci
 COPY --from=build /app/bin/semver-linux-amd64 /bin/semver
 COPY ./scripts/ci/bump/before_script.sh /bin/bump-before
 RUN chmod +x /bin/bump-before
