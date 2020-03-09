@@ -1,0 +1,10 @@
+schemaVersion: "2.0.0"
+fileExistenceTests:
+  - name: "binary"
+    path: "/bin/semver"
+    shouldExist: true
+commandTests:
+  - name: "binary is in path"
+    command: "/bin/semver"
+    args: ["--version"]
+    expectedOutput: ["semver version"]

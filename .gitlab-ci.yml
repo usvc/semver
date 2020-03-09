@@ -1,83 +1,127 @@
-image: usvc/ci-golang:gitlab-latest
-services:
-  - docker:dind
+image: golang:1.14
 stages:
-  - validation
-  - versioning
+  - init
+  - test & build
   - release
-  - validate_release
+  - package
   - publish
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
 
-run tests:
-  only: ["master"]
-  stage: validation
+init:
+  stage: init
+  image: usvc/ci:go-dependencies
+  cache:
+    key: ${CI_COMMIT_REF_NAME}
+    paths: ["./vendor"]
   artifacts:
-    untracked: false
-    expire_in: 3 days
-    paths:
-      - ./c.out
-  script:
-    - make dep
-    - make test
+    paths: ["./vendor"]
+  script: ["entrypoint"]
 
-build binary:
-  only: ["master"]
-  stage: validation
+unit test:
+  stage: test & build
+  image: usvc/ci:go-test
+  dependencies: ["init"]
   artifacts:
-    untracked: false
-    expire_in: 3 days
-    paths:
-      - ./bin/semver-linux-amd64
-      - ./bin/semver-darwin-amd64
-      - ./bin/semver-windows-386
-  script:
-    - make dep
-    - make binaries
+    paths: ["./c.out"]
+  script: ["entrypoint"]
 
-build images:
+.build:
+  image: usvc/ci:go-build-production
+  stage: test & build
+  dependencies: ["init"]
+  artifacts:
+    paths: ["./bin/*"]
+  variables:
+    BIN_NAME: semver
+  before_script: ["git fetch"]
+  script: ["entrypoint"]
+.build_linux:
+  extends: .build
+  variables:
+    GOOS: linux
+    GOARCH: amd64
+build linux (test):
+  extends: .build_linux
   only: ["master"]
-  stage: validation
-  script:
-    - make images
+build linux:
+  extends: .build_linux
+  only: ["tags"]
+.build_macos:
+  extends: .build
+  variables:
+    GOOS: darwin
+    GOARCH: amd64
+build macos (test):
+  extends: .build_macos
+  only: ["master"]
+build macos:
+  extends: .build_macos
+  only: ["tags"]
+.build_windows:
+  extends: .build
+  variables:
+    GOOS: windows
+    GOARCH: "386"
+build windows (test):
+  extends: .build_windows
+  only: ["master"]
+build windows:
+  extends: .build_windows
+  only: ["tags"]
 
-bump:
+version bump:
+  stage: release
   only: ["master"]
-  stage: versioning
   image: usvc/semver:gitlab-latest
   before_script:
+    - apk update && apk upgrade
+    - apk add openssh
     - mkdir -p ~/.ssh
-    - 'printf -- "${GITLAB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
+    - 'printf -- "${DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
     - chmod 600 -R ~/.ssh/id_rsa
     - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
   script:
-    - git remote set-url origin "${GITLAB_DEPLOY_URL}"
+    - git remote set-url origin "git@gitlab.com:${CI_PROJECT_PATH}.git"
     - git checkout master
-    - semver bump ${BUMP_TYPE} --git --apply
+    - git fetch
+    - semver bump --git --apply
     - git push origin master --verbose --tags
   after_script:
     - rm -rf ~/.ssh/*
 
-docker image:
+compress:
+  stage: package
   only: ["tags"]
-  stage: release
-  script:
-    - docker login ${DOCKER_REGISTRY_URL} -u ${DOCKER_REGISTRY_USERNAME} -p ${DOCKER_REGISTRY_PASSWORD}
-    - make publish_images
-    - docker logout
-
-to github:
-  only: ["tags"]
-  stage: publish
+  # allow failure because it's not necessary to always compress
+  # even though that would be nice
+  allow_failure: true
+  dependencies: ["build linux", "build macos", "build windows"]
+  artifacts:
+    paths: ["./bin/*"]
   before_script:
-    - mkdir -p ~/.ssh
-    - 'printf -- "${GITHUB_DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
-    - chmod 600 -R ~/.ssh/id_rsa
-    - ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+    - apt-get update && apt-get upgrade -y
+    - apt-get install -y make g++ upx
   script:
-    - git config --global user.email "usvc.semver@usvc.dev"
-    - git config --global user.name "usvc_publisher"
-    - make publish_github
-  after_script:
-    - rm -rf ~/.ssh/*
+    - GOOS=linux GOARCH=amd64 make compress
+    - GOOS=darwin GOARCH=amd64 make compress
+    - GOOS=windows GOARCH=386 BIN_EXT=.exe make compress
+
+dockerize:
+  stage: package
+  only: ["tags"]
+  services: ["docker:19.03.1-dind"]
+  image: usvc/ci:docker-build
+  artifacts:
+    paths: ["./build/*"]
+  variables:
+    DOCKER_IMAGE_URL: usvc/semver
+  script: ["entrypoint"]
+
+dockerhub:
+  stage: publish
+  only: ["tags"]
+  services: ["docker:19.03.1-dind"]
+  image: usvc/ci:docker-publish
+  dependencies: ["dockerize"]
+  variables:
+    DOCKER_IMAGE_URL: usvc/semver
+  script: ["entrypoint"]
