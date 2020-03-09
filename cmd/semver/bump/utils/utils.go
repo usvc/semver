@@ -32,7 +32,7 @@ func SetCurrentRepositorySemver(version *semver.Semver) error {
 	}
 	err = repo.TagCurrentGitCommit(version.String(), currentDirectory)
 	if err != nil {
-		return fmt.Errorf("failed to add tag '%s' to repository at '%s': '%s'", version.String, currentDirectory, err)
+		return fmt.Errorf("failed to add tag '%s' to repository at '%s': '%s'", version.String(), currentDirectory, err)
 	}
 	return nil
 }
