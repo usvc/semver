@@ -33,6 +33,7 @@ build_production:
 		./cmd/$(CMD_ROOT)
 	sha256sum -b ./bin/$(BIN_PATH) \
 		| cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
+	ls -lah ./bin/$(BIN_PATH)*
 compress:
 	ls -lah ./bin/$(BIN_PATH)
 	upx -9 -v -o ./bin/.$(BIN_PATH) \

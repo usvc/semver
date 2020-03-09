@@ -7,5 +7,6 @@ require (
 	github.com/usvc/config v0.1.8
 	github.com/usvc/go-logger v0.3.1
 	github.com/usvc/go-semver v0.0.13
+	github.com/usvc/logger v0.2.2
 	gopkg.in/src-d/go-git.v4 v4.13.1
 )

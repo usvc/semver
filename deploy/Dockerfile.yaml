@@ -8,3 +8,5 @@ commandTests:
     command: "/bin/semver"
     args: ["--version"]
     expectedOutput: ["semver version"]
+metadataTest:
+  entrypoint: ["/bin/semver"]

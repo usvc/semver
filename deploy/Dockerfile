@@ -8,7 +8,7 @@ RUN make deps
 RUN make build_production
 RUN make compress
 
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/base-debian10 AS production
 ARG GIT_COMMIT_ID="undefined"
 ARG GIT_TAG="undefined"
 ARG BUILD_TIMESTAMP="undefined"
