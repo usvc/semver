@@ -1,29 +1,28 @@
 sudo: required
-language: go
-go:
-  - "1.12.x"
-services:
-  - docker
-stages:
-  - build
-  - deploy
 git:
   submodules: true
   quiet: false
+language: go
+go:
+  - 1.14.x
+if: tag IS present
 deploy:
   provider: releases
-  api_key: ${GITHUB_OAUTH_TOKEN}
+  api_key: "${RELEASE_TOKEN}"
   file_glob: true
   file: ./bin/*
   skip_cleanup: true
   on:
     branch: master
     tags: true
-jobs:
-  include:
-    - stage: build
-      before_script:
-        - sudo apt-get -y install upx
-      script:
-        - make dep
-        - make binaries
+before_script:
+  - sudo apt-get update
+  - sudo apt-get install -y make git g++ upx
+script:
+  - make deps
+  - GOOS=linux GOARCH=amd64 make build_production
+  - GOOS=darwin GOARCH=amd64 make build_production
+  - GOOS=windows GOARCH=386 BIN_EXT=.exe make build_production
+  - GOOS=linux GOARCH=amd64 make compress || true
+  - GOOS=darwin GOARCH=amd64 make compress || true
+  - GOOS=windows GOARCH=386 BIN_EXT=.exe make compress || true
