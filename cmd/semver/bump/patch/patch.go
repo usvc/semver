@@ -50,7 +50,7 @@ func GetCommand() *cobra.Command {
 				if retrieveFromGit && applyToGit {
 					log.Debugf("adding git tag '%s' to repository...", version.String())
 					err = bumpUtils.SetCurrentRepositorySemver(version)
-					log.Infof("added tag '%s'", version.String)
+					log.Infof("added tag '%s'", version.String())
 				}
 			},
 		}
