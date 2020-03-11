@@ -71,22 +71,8 @@ build windows:
 version bump:
   stage: release
   only: ["master"]
-  image: usvc/semver:gitlab-latest
-  before_script:
-    - apk update && apk upgrade
-    - apk add openssh
-    - mkdir -p ~/.ssh
-    - 'printf -- "${DEPLOY_KEY}" | base64 -d > ~/.ssh/id_rsa'
-    - chmod 600 -R ~/.ssh/id_rsa
-    - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
-  script:
-    - git remote set-url origin "git@gitlab.com:${CI_PROJECT_PATH}.git"
-    - git checkout master
-    - git fetch
-    - semver bump --git --apply
-    - git push origin master --verbose --tags
-  after_script:
-    - rm -rf ~/.ssh/*
+  image: usvc/ci:version-bump-gitlab
+  script: ["entrypoint"]
 
 compress:
   stage: package
