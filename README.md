@@ -3,6 +3,8 @@
 [![release github](https://badge.fury.io/gh/usvc%2Fsemver.svg)](https://github.com/usvc/semver/releases)
 [![pipeline status](https://gitlab.com/usvc/utils/semver/badges/master/pipeline.svg)](https://gitlab.com/usvc/utils/semver/commits/master)
 [![build btatus](https://travis-ci.org/usvc/semver.svg?branch=master)](https://travis-ci.org/usvc/semver)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/5b9ad81dab4d4e4ddd1c/test_coverage)](https://codeclimate.com/github/usvc/semver/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/5b9ad81dab4d4e4ddd1c/maintainability)](https://codeclimate.com/github/usvc/semver/maintainability)
 
 An easy-peasy CLI tool to bump semver versions.
 

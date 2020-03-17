@@ -5,7 +5,6 @@ git:
 language: go
 go:
   - 1.14.x
-if: tag IS present
 deploy:
   provider: releases
   api_key: "${RELEASE_TOKEN}"
